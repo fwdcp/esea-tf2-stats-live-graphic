@@ -1,0 +1,9 @@
+[
+    {
+        "name": "esea-tf2-match-stats",
+        "title": "ESEA TF2 Match Stats",
+        "width": 2,
+        "file": "panel.jade",
+        "faIcon": "fa-line-chart"
+    }
+]

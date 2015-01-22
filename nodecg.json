@@ -1,0 +1,13 @@
+{
+    "name": "esea-tf2-stats-live-graphic",
+    "version": "0.1.0",
+    "nodecgDependency": "^0.4",
+    "description": "stats display for ESEA TF2 matches",
+    "extension": {
+        "express": false,
+        "path": "extension.js"
+    },
+    "dependencies": {
+        "request": "^2"
+    }
+}

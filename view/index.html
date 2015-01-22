@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.4/js/jquery.tablesorter.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.4/css/theme.blue.css" type="text/css" id="" media="print, projection, screen" />
+        <script src="/viewsetup.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $("#players").tablesorter({
+                    sortList: [[0,0]]
+                });
+            });
+
+            $(document).on('ncgReady', function() {
+                nodecg.declareSyncedVar({
+                    variableName: 'eseaMatchStats',
+                    initialVal: {},
+                    setter: function(value) {
+                        $('#teams > tbody').empty();
+
+                        if (value.teams) {
+                            _.each(value.teams, function(team) {
+                                $('#teams > tbody').append("<tr></tr>");
+
+                                if (team.team_index == 1) {
+                                    $('#teams > tbody > tr:last-child').addClass('odd');
+                                }
+                                else {
+                                    $('#teams > tbody > tr:last-child').addClass('even');
+                                }
+
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.team_name + "</td>");
+
+                                if (team.period_score[1]) {
+                                    $('#teams > tbody > tr:last-child').append("<td class=\"h1\">" + team.period_score[1] + "</td>");
+                                    $('#teams .h1').show();
+                                }
+                                else {
+                                    $('#teams > tbody > tr:last-child').append("<td class=\"h1\">-</td>");
+                                    $('#teams .h1').hide();
+                                }
+
+                                if (team.period_score[2]) {
+                                    $('#teams > tbody > tr:last-child').append("<td class=\"h2\">" + team.period_score[2] + "</td>");
+                                    $('#teams .h2').show();
+                                }
+                                else {
+                                    $('#teams > tbody > tr:last-child').append("<td class=\"h2\">-</td>");
+                                    $('#teams .h2').hide();
+                                }
+
+                                if (team.period_score[3]) {
+                                    $('#teams > tbody > tr:last-child').append("<td class=\"ot\">" + team.period_score[3] + "</td>");
+                                    $('#teams .ot').show();
+                                }
+                                else {
+                                    $('#teams > tbody > tr:last-child').append("<td class=\"ot\">-</td>");
+                                    $('#teams .ot').hide();
+                                }
+
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.score + "</td>");
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.frags + "</td>");
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.damage_dealt + "</td>");
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.health_received + "</td>");
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.capture_point_captures + "</td>");
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.capture_point_blocks + "</td>");
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.ubercharges + "</td>");
+                                $('#teams > tbody > tr:last-child').append("<td>" + team.ubercharges_dropped + "</td>");
+                            });
+                        }
+
+                        $('#players > tbody').empty();
+
+                        if (value.players) {
+                            _.each(value.players, function(player) {
+                                $('#players > tbody').append("<tr></tr>");
+
+                                if (player.team_index == 1) {
+                                    $('#players > tbody > tr:last-child').addClass('odd');
+                                }
+                                else {
+                                    $('#players > tbody > tr:last-child').addClass('even');
+                                }
+
+                                $('#players > tbody > tr:last-child').append("<td>" + player.country_flag + " " + player.alias + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.frags + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.assists + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.deaths + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + ((player.frags + player.assists) / player.deaths).toFixed(2) + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.damage_dealt + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.ddm.toFixed(2) + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.health_received + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.medic_picks + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.capture_point_captures + "</td>");
+                                $('#players > tbody > tr:last-child').append("<td>" + player.capture_point_blocks + "</td>");
+                            });
+                        }
+
+                        $("#players").trigger("update");
+                    }
+                });
+
+                nodecg.declareSyncedVar({
+                    variableName: 'eseaMatchPlayersSorts',
+                    initialVal: [[0,0]],
+                    setter: function(value) {
+                        if (!_.isEqual(value, $("#players")[0].config.sortList)) {
+                            $("#players").trigger("sorton", [value]);
+                        }
+                    }
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <table class="tablesorter tablesorter-blue" id="teams">
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th class="h1">H1</th>
+                    <th class="h2">H2</th>
+                    <th class="ot">OT</th>
+                    <th>T</th>
+                    <th>K</th>
+                    <th>DMG</th>
+                    <th>HR</th>
+                    <th>CPC</th>
+                    <th>CPB</th>
+                    <th>UC</th>
+                    <th>UCD</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <table class="tablesorter tablesorter-blue" id="players">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>K</th>
+                    <th>A</th>
+                    <th>D</th>
+                    <th>KA:D</th>
+                    <th>DMG</th>
+                    <th>DPM</th>
+                    <th>HR</th>
+                    <th>MP</th>
+                    <th>CPC</th>
+                    <th>CPB</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </body>
+</html>
